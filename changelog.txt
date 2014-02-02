@@ -1,0 +1,31 @@
+1.1.1
+---
+* Converted build system from Apache Ant to Grunt.
+* Converted documentation from JSDoc to YUIDoc.
+
+1.1.0
+---
+* Added support for use as a CommonJS module.  This enables using UCSV as a
+  library in Mozilla (Jetpack) Add-ons.  It should also allow use in Node.js
+  environments. Moved the strict mode declaration into the closure and cleaned
+  up some other formatting to make JSLint happy.
+
+1.0.3
+---
+* Bug fix in arrayToCsv.  arrayToCsv now wraps lines containing newline
+  characters with double-quotes as was originally intended. Thanks goes to Colin
+  Keenan for discovering and reporting this bug. (http://code.google.com/p/rentap/)
+
+1.0.2
+---
+* csvToArray now returns empty fields as nulls instead of empty strings as
+  suggested by Leon Bambrick (http://secretGeek.net).
+* csvToArray now converts non-quoted integers and floats to the appropriate type
+  instead of assuming they are strings.
+
+* Minor spelling fix.
+
+1.0.1
+---
+* A couple of tweaks to get JSLint passing again.
+* Removed the global flag from the trim function's RegExps to improve the performance.
