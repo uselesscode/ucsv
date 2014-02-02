@@ -134,27 +134,25 @@
           row = [],
           out = [],
           i,
-          processField;
+          processField = function (field) {
+            if (fieldQuoted !== true) {
+              // If field is empty set to null
+              if (field === '') {
+                field = null;
+              // If the field was not quoted and we are trimming fields, trim it
+              } else if (trm === true) {
+                field = trim(field);
+              }
 
-        processField = function (field) {
-          if (fieldQuoted !== true) {
-            // If field is empty set to null
-            if (field === '') {
-              field = null;
-            // If the field was not quoted and we are trimming fields, trim it
-            } else if (trm === true) {
-              field = trim(field);
+              // Convert unquoted numbers to their appropriate types
+              if (rxIsInt.test(field)) {
+                field = parseInt(field, 10);
+              } else if (rxIsFloat.test(field)) {
+                field = parseFloat(field, 10);
+              }
             }
-
-            // Convert unquoted numbers to their appropriate types
-            if (rxIsInt.test(field)) {
-              field = parseInt(field, 10);
-            } else if (rxIsFloat.test(field)) {
-              field = parseFloat(field, 10);
-            }
-          }
-          return field;
-        };
+            return field;
+          };
 
         for (i = 0; i < s.length; i += 1) {
           cur = s.charAt(i);
