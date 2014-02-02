@@ -222,8 +222,9 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-yuidoc');
   grunt.loadNpmTasks('grunt-regex-replace');
 
-  grunt.registerTask('default', ['jshint:beforeconcat', 'clean:cleanBuild', 'qunit:preBuild', 'copy', 'regex-replace:banner', 'concat_sourcemap', 'uglify', 'regex-replace:postMin', 'compress', 'copy:test', 'regex-replace:test', 'jshint:afterconcat', 'clean:postBuild', 'qunit:postBuild']);
+  grunt.registerTask('default', ['jshint:beforeconcat', 'clean:cleanBuild', 'qunit:preBuild', 'copy', 'regex-replace:banner', 'concat_sourcemap', 'uglify', 'regex-replace:postMin', 'compress', 'copy:test', 'regex-replace:test', 'jshint:afterconcat', 'clean:postBuild', 'yuidoc', 'qunit:postBuild']);
   grunt.registerTask('keepunmin', ['jshint:beforeconcat', 'clean:cleanBuild', 'qunit:preBuild', 'copy', 'regex-replace:banner', 'concat_sourcemap', 'uglify', 'regex-replace:postMin', 'compress', 'copy:test', 'regex-replace:test', 'jshint:afterconcat', 'qunit:postBuild']);
   grunt.registerTask('test', ['qunit:preBuild']);
+  grunt.registerTask('docs', ['yuidoc']);
   grunt.registerTask('notest', ['clean:cleanBuild', 'copy', 'regex-replace:banner', 'concat_sourcemap', 'uglify', 'regex-replace:postMin', 'compress', 'copy:test', 'regex-replace:test', 'clean:postBuild']);
 };
