@@ -10,11 +10,10 @@
         return function (s) {
           return s.trim();
         };
-      } else {
-        return function (s) {
-          return s.replace(/^\s*/, '').replace(/\s*$/, '');
-        };
       }
+      return function (s) {
+        return s.replace(/^\s*/, '').replace(/\s*$/, '');
+      };
     }()),
 
     isNumber = function (o) {
@@ -29,10 +28,9 @@
       if (s.charAt(s.length - 1) !== "\n") {
         // Does not end with \n, just return string
         return s;
-      } else {
-        // Remove the \n
-        return s.substring(0, s.length - 1);
       }
+      // Remove the \n
+      return s.substring(0, s.length - 1);
     },
 
     CSV = {
