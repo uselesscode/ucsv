@@ -7,10 +7,10 @@ test("hello internal test", function () {
 
 test('chomp with no new line', function () {
   var chompped = chomp('foo\nbar');
-  strictEqual('foo\nbar', chompped);
+  strictEqual(chompped, 'foo\nbar');
 });
 
 test('chomp with new line', function () {
   var chompped = chomp('foo\nbar\n');
-  strictEqual('foo\nbar', chompped);
+  strictEqual(chompped, 'foo\nbar');
 });
