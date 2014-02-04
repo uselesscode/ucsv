@@ -83,7 +83,7 @@
               }
             } else if (isNumber(cur)) {
               cur = cur.toString(10);
-            } else if (cur === null) {
+            } else if (cur === null || cur === undefined) {
               cur = '';
             } else {
               cur = cur.toString();

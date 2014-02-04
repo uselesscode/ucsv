@@ -2,7 +2,8 @@
 ---
 * Converted build system from Apache Ant to Grunt.
 * Converted documentation from JSDoc to YUIDoc.
-
+* If an undefined value is in the input to arrayToCsv it will now be considered
+  an empty field.
 1.1.0
 ---
 * Added support for use as a CommonJS module.  This enables using UCSV as a

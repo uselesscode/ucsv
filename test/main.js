@@ -33,6 +33,13 @@ test('arrayToCsv nulls are empty fields', function () {
   strictEqual(csv, csvShouldBe);
 });
 
+test('arrayToCsv undefined values are empty fields', function () {
+  var csvArray =	[["Tom", undefined, "Harry"]],
+    csv = CSV.arrayToCsv(csvArray),
+    csvShouldBe = 'Tom,,Harry\n';
+  strictEqual(csv, csvShouldBe);
+});
+
 test('arrayToCsv integers and quoted integers', function () {
   var csvArray =	[[1, 2, "3"]],
     csv = CSV.arrayToCsv(csvArray),
