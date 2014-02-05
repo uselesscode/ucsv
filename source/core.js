@@ -151,11 +151,9 @@
                 field = trimmedField;
               }
 
-              // Convert unquoted numbers to their appropriate types
-              if (rxIsInt.test(trimmedField)) {
-                field = parseInt(trimmedField, 10);
-              } else if (rxIsFloat.test(trimmedField)) {
-                field = parseFloat(trimmedField);
+              // Convert unquoted numbers to numbers
+              if (rxIsInt.test(trimmedField) || rxIsFloat.test(trimmedField)) {
+                field = +trimmedField;
               }
             }
             return field;
