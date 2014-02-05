@@ -141,20 +141,21 @@
           out = [],
           i,
           processField = function (field) {
+            var trimmedField = trim(field);
             if (fieldQuoted !== true) {
               // If field is empty set to null
               if (field === '') {
                 field = null;
               // If the field was not quoted and we are trimming fields, trim it
               } else if (trm === true) {
-                field = trim(field);
+                field = trimmedField;
               }
 
               // Convert unquoted numbers to their appropriate types
-              if (rxIsInt.test(field)) {
-                field = parseInt(field, 10);
-              } else if (rxIsFloat.test(field)) {
-                field = parseFloat(field, 10);
+              if (rxIsInt.test(trimmedField)) {
+                field = parseInt(trimmedField, 10);
+              } else if (rxIsFloat.test(trimmedField)) {
+                field = parseFloat(trimmedField);
               }
             }
             return field;

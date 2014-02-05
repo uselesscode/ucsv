@@ -174,6 +174,14 @@ test('csvToArray floats and quoted floats', function () {
   strictEqual(result[0][2], "3.14");
 });
 
+test('csvToArray numbers are interpreted as numbers even when not trimming fields', function () {
+  var csv = ' 1, 2, 3.14',
+    result = CSV.csvToArray(csv, true);
+  ok(Array.isArray(result), 'Result is an array');
+  deepEqual(result, [[1,2,3.14]]);
+});
+
+
 test('csvToArray newline in string', function () {
   var csv = 'a,"b\nc",d',
     result = CSV.csvToArray(csv, true);
