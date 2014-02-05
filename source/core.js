@@ -33,6 +33,29 @@
       return s.substring(0, s.length - 1);
     },
 
+    prepField = function (field) {
+      if (isString(field)) {
+        // Escape any " with double " ("")
+        field = field.replace(/"/g, '""');
+
+        // If the field starts or ends with whitespace, contains " or , or a newline or
+        // is a string representing a number, quote it.
+        if (rxNeedsQuoting.test(field) || rxIsInt.test(field) || rxIsFloat.test(field)) {
+          field = '"' + field + '"';
+        // quote empty strings
+        } else if (field === "") {
+          field = '""';
+        }
+      } else if (isNumber(field)) {
+        field = field.toString(10);
+      } else if (field === null || field === undefined) {
+        field = '';
+      } else {
+        field = field.toString();
+      }
+      return field;
+    },
+
     CSV = {
       /**
        Converts an array into a Comma Separated Values list.
@@ -70,24 +93,7 @@
           for (j = 0; j < row.length; j += 1) {
             cur = row[j];
 
-            if (isString(cur)) {
-              // Escape any " with double " ("")
-              cur = cur.replace(/"/g, '""');
-
-              // If the field starts or ends with whitespace, contains " or , or is a string representing a number
-              if (rxNeedsQuoting.test(cur) || rxIsInt.test(cur) || rxIsFloat.test(cur)) {
-                cur = '"' + cur + '"';
-              // quote empty strings
-              } else if (cur === "") {
-                cur = '""';
-              }
-            } else if (isNumber(cur)) {
-              cur = cur.toString(10);
-            } else if (cur === null || cur === undefined) {
-              cur = '';
-            } else {
-              cur = cur.toString();
-            }
+            cur = prepField(cur);
 
             out += j < row.length - 1 ? cur + ',' : cur;
           }
