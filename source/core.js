@@ -206,5 +206,170 @@
         out.push(row);
 
         return out;
+      },
+      /**
+        Converts a Comma Separated Values string into an array of objects.
+        Each line in the CSV becomes an object with properties named after each column.
+        Empty fields are converted to nulls and non-quoted numbers are converted to integers or floats.
+
+        @method csvToObject
+        @since 1.1.1
+        @return {Array} The CSV parsed as an array of objects
+        @param {String} s The string containing CSV data to convert
+        @param {Object} config Object literal with extra configuration
+        @param {Array} [config.columns] An array containing the name of each column in the CSV data. If not
+          provided, the first row of the CSV data is assumed to contain the column names.
+        @param {Boolean} [config.trim] If true any field parsed from the CSV data will have leading and
+                                       trailing whitespace trimmed
+        @for CSV
+        @static
+        @example
+          TODO write example
+      */
+      csvToObject: function (s, config) {
+        config = config !== undefined ? config : {};
+        var columns = config.columns,
+            trimIt = !!config.trim,
+            csvArray = this.csvToArray(s, trimIt);
+
+        // if columns were not provided, assume they are
+        // in the first row
+        if (!columns) {
+          columns = csvArray.shift();
+        }
+
+        return csvArray.map(function (row) {
+          var obj = {},
+            i = 0,
+            len = columns.length;
+          for (; i < len; i += 1) {
+            obj[columns[i]] = row[i];
+          }
+          return obj;
+        });
+      },
+
+      /**
+        Converts an array of objects into Comma Separated Values data
+        Each propery on the objects becomes a column in the CSV data.
+
+        @method objectToCsv
+        @since 1.1.1
+        @return {String} CSV data, each row representing an object from the input array, each field representing a property from those objects
+        @param {String} arr An array of objects to be converted into CSV
+        @param {Object} config Object literal with extra configuration
+        @param {Array} [config.columns] An array containing the name of each column in the CSV data. If not
+          provided, the column names will be inferred from the property names of the objects. Explicitly
+          defining column names has several advantages.
+
+          * It allows you to specify a subset of the properties to use if you wish
+          * It allows you to control what order the columns are output in, since for...in does not guarantee a specific order.
+          * It is faster since all column names are already known
+
+        @param {Boolean} [config.includeColumns = true] By default `objectToCsv` outputs the column names as
+          the first row of the CSV data. Set to false to prevent this.
+        @for CSV
+        @static
+        @example
+          TODO write example
+      */
+      objectToCsv: function (arr, config) {
+        config = config !== undefined ? config : {};
+        var columns = config.columns,
+          includeColumns = config.includeColumns,
+          csv = '',
+          csvColumns = '',
+          processKnownColumns = function (obj) {
+            var out = '',
+              obj,
+              prop,
+              i,
+              len = arr.length,
+              j,
+              jlen = columns.length;
+
+            for (i = 0; i < len; i += 1) {
+              obj = arr[i];
+              for (j = 0; j < jlen; j += 1) {
+                prop = columns[j];
+                out += prepField(obj[prop]);
+                out += j < jlen - 1 ? ',' : '';
+              }
+              out += '\n';
+            }
+            return out;
+          },
+          processUnknownColumns = function () {
+            var cols = [],
+              firstRowLength,
+              finalRowLength,
+              obj,
+              prop,
+              i,
+              currentCol,
+              len = arr.length,
+              row,
+              out = [];
+
+            for (i = 0; i < len; i += 1) {
+              obj = arr[i];
+              row = [];
+
+              // loop over all props in obj,
+              for (prop in obj) {
+                if (obj.hasOwnProperty(prop)) {
+                  currentCol = cols.indexOf(prop);
+                  // if this prop does not have a column yet
+                  if (currentCol === -1) {
+                    currentCol = cols.push(prop);
+                    currentCol -= 1;
+                  }
+                  row[currentCol] = prepField(obj[prop]);
+                }
+              }
+
+              if (i === 0) {
+                firstRowLength = row.length;
+              }
+
+              out.push(row);
+            }
+
+            finalRowLength = cols.length
+
+            // if some objects had properties that weren't on all the object
+            // we need to resize each row.
+            if (firstRowLength !== finalRowLength) {
+              out.forEach(function (row) {
+                row.length = finalRowLength;
+              });
+            }
+
+            // export cols to our parent scope so
+            // includeColumns can use it
+            columns = cols;
+
+            return out.map(function (row) {
+              return row.join(',');
+            }).join('\n') + '\n';
+          };
+
+        includeColumns = includeColumns === undefined ? true : !!includeColumns;
+
+        if (columns !== undefined) {
+          csv = processKnownColumns();
+        } else {
+          csv = processUnknownColumns();
+        }
+
+        if (includeColumns) {
+          columns.forEach(function (col) {
+            csvColumns += prepField(col) + ',';
+          });
+          csvColumns = csvColumns.substring(0, csvColumns.length - 1);
+          csv = csvColumns + '\n' + csv;
+        }
+
+        return csv;
       }
     };

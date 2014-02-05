@@ -1,3 +1,6 @@
+/*global deepEqual, module */
+module('unsorted');
+
 test("hello test", function () {
   ok(1 === 1, "Passed!");
 });
