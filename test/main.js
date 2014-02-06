@@ -1,3 +1,6 @@
+/*global deepEqual, module */
+module('unsorted');
+
 test("hello test", function () {
   ok(1 === 1, "Passed!");
 });
@@ -28,6 +31,13 @@ test('arrayToCsv no trim', function () {
 
 test('arrayToCsv nulls are empty fields', function () {
   var csvArray =	[["Tom", null, "Harry"]],
+    csv = CSV.arrayToCsv(csvArray),
+    csvShouldBe = 'Tom,,Harry\n';
+  strictEqual(csv, csvShouldBe);
+});
+
+test('arrayToCsv undefined values are empty fields', function () {
+  var csvArray =	[["Tom", undefined, "Harry"]],
     csv = CSV.arrayToCsv(csvArray),
     csvShouldBe = 'Tom,,Harry\n';
   strictEqual(csv, csvShouldBe);
@@ -163,6 +173,14 @@ test('csvToArray floats and quoted floats', function () {
   strictEqual(result[0][1], 2.2);
   strictEqual(result[0][2], "3.14");
 });
+
+test('csvToArray numbers are interpreted as numbers even when not trimming fields', function () {
+  var csv = ' 1, 2, 3.14',
+    result = CSV.csvToArray(csv, true);
+  ok(Array.isArray(result), 'Result is an array');
+  deepEqual(result, [[1,2,3.14]]);
+});
+
 
 test('csvToArray newline in string', function () {
   var csv = 'a,"b\nc",d',

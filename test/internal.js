@@ -1,9 +1,5 @@
-/*globals chomp */
-
-test("hello internal test", function () {
-  ok(1 === 1, "Passed!");
-});
-
+/*globals chomp, module */
+module('Internal functions');
 
 test('chomp with no new line', function () {
   var chompped = chomp('foo\nbar');

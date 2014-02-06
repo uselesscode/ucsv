@@ -1,7 +1,16 @@
 1.1.1
 ---
+New features and changes
+* New csvToObject and objectToCsv methods to read and write CSV data as an
+  array of objects.
 * Converted build system from Apache Ant to Grunt.
 * Converted documentation from JSDoc to YUIDoc.
+
+Bug fixes
+* If an undefined value is in the input to arrayToCsv it will now be considered
+  an empty field.
+* When reading CSV files unquoted numbers are treated as numbers even with
+  leading or trailing whitespace.
 
 1.1.0
 ---
