@@ -212,7 +212,7 @@
         Empty fields are converted to nulls and non-quoted numbers are converted to integers or floats.
 
         @method csvToObject
-        @since 1.1.1
+        @since 1.2.0
         @return {Array} The CSV parsed as an array of objects
         @param {String} s The string containing CSV data to convert
         @param {Object} config Object literal with extra configuration
@@ -253,7 +253,7 @@
         Each propery on the objects becomes a column in the CSV data.
 
         @method objectToCsv
-        @since 1.1.1
+        @since 1.2.0
         @return {String} CSV data, each row representing an object from the input array, each field representing a property from those objects
         @param {String} arr An array of objects to be converted into CSV
         @param {Object} config Object literal with extra configuration
