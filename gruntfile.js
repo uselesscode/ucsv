@@ -13,8 +13,10 @@ module.exports = function (grunt) {
       'window': true,
       ok: true,
       test: true,
-      strictEqual: true
+      strictEqual: true,
+      deepEqual: true
     },
+    // quick-dirty copy obj
     jshintGlobalsBeforeConcat = JSON.parse(JSON.stringify(jshintGlobals));
 
   // test.js needs to know about CSV
@@ -142,7 +144,7 @@ module.exports = function (grunt) {
       test: {
         expand: true,
         cwd: 'test/',
-        src: ['main.js', 'lib/*', 'tests.html'],
+        src: ['arrayToCsv.js', 'csvToArray.js', 'csvToObject', 'objectToCsv', 'lib/*', 'tests.html'],
         dest: 'dist/test/',
         filter: 'isFile'
       }

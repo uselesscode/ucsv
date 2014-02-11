@@ -280,7 +280,6 @@
           csvColumns = '',
           processKnownColumns = function (obj) {
             var out = '',
-              obj,
               prop,
               i,
               len = arr.length,
@@ -334,7 +333,7 @@
               out.push(row);
             }
 
-            finalRowLength = cols.length
+            finalRowLength = cols.length;
 
             // if some objects had properties that weren't on all the object
             // we need to resize each row.
