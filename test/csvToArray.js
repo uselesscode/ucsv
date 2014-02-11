@@ -1,123 +1,132 @@
 /*global deepEqual, module */
-module('csvToArray');
+(function () {
+  "use strict";
+  module('csvToArray');
 
-test('csvToArray strings', function () {
-  var csv = '"Leno, Jay",10' + "\n" + '"Conan ""Conando"" O\'Brien",11:35' + "\n" + '"Fallon, Jimmy",12:35' + "\n",
-    result = CSV.csvToArray(csv);
+  test('csvToArray strings', function () {
+    var csv = '"XBOX ""XBONE"" One",2013\n' +
+      '"Nintendo 64, AKA Nintendo Ultra 64",1996\n' +
+      '"Playstation\n4",2013\n',
+      expected = [
+        ['XBOX "XBONE" One', 2013],
+        ['Nintendo 64, AKA Nintendo Ultra 64', 1996],
+        ['Playstation\n4', 2013]
+      ],
+      result = CSV.csvToArray(csv);
+    deepEqual(result, expected);
+  });
 
-  ok(Array.isArray(result), "Result is an array");
-  strictEqual(result.join('|'), 'Leno, Jay,10|Conan "Conando" O\'Brien,11:35|Fallon, Jimmy,12:35');
-});
+  test('csvToArray integers', function () {
+    var csv = '1,2,3\n4,5,6',
+      expected = [
+        [1, 2, 3],
+        [4, 5, 6]
+      ],
+      result = CSV.csvToArray(csv);
 
-test('csvToArray integers', function () {
-  var csv = '1,2,3\n4,5,6',
-    result = CSV.csvToArray(csv);
+    deepEqual(result, expected);
+  });
 
-  ok(Array.isArray(result), 'Result is an array');
-  strictEqual(result.join('|'), '1,2,3|4,5,6');
-});
+  test('csvToArray no trim', function () {
+    var csv = 'no need to trim, should not trim 1,should not trim 2 , should not trim 3 \n"quoted 1"," quoted 2","quoted 3 "," quoted 4 "',
+      expected = [
+        ['no need to trim', ' should not trim 1', 'should not trim 2 ', ' should not trim 3 '],
+        ['quoted 1', ' quoted 2', 'quoted 3 ', ' quoted 4 ']
+      ],
+      result = CSV.csvToArray(csv);
 
-test('csvToArray no trim', function () {
-  var csv = 'no need to trim, should not trim 1,should not trim 2 , should not trim 3 \n"quoted 1"," quoted 2","quoted 3 "," quoted 4 "',
-    result = CSV.csvToArray(csv);
+    deepEqual(result, expected);
+  });
 
-  ok(Array.isArray(result), 'Result is an array');
-  strictEqual(result.join('|'), 'no need to trim, should not trim 1,should not trim 2 , should not trim 3 |quoted 1, quoted 2,quoted 3 , quoted 4 ');
-});
+  test('csvToArray integers', function () {
+    var csv = '1,2,3\n4,5,6',
+      expected = [
+        [1, 2, 3],
+        [4, 5, 6]
+      ],
+      result = CSV.csvToArray(csv);
 
-test('csvToArray integers', function () {
-  var csv = '1,2,3\n4,5,6',
-    result = CSV.csvToArray(csv);
+    deepEqual(result, expected);
+  });
 
-  ok(Array.isArray(result), 'Result is an array');
-  ok(Array.isArray(result[0]), 'result[0] is an array');
+  test('csvToArray integers with trailing newline', function () {
+    var csv = '1,2,3\n4,5,6\n',
+      expected = [
+        [1, 2, 3],
+        [4, 5, 6]
+      ],
+      result = CSV.csvToArray(csv);
 
-  strictEqual(result[0][0], 1);
-  strictEqual(result[0][1], 2);
-  strictEqual(result[0][2], 3);
-  strictEqual(result[1][0], 4);
-  strictEqual(result[1][1], 5);
-  strictEqual(result[1][2], 6);
-});
+    deepEqual(result, expected);
+  });
 
-test('csvToArray integers with trailing newline', function () {
-  var csv = '1,2,3\n4,5,6\n',
-    result = CSV.csvToArray(csv);
+  test('csvToArray no trim', function () {
+    var csv = 'no need to trim, should not trim 1,should not trim 2 , should not trim 3 \n"quoted 1"," quoted 2","quoted 3 "," quoted 4 "',
+      expected = [
+        ['no need to trim', ' should not trim 1', 'should not trim 2 ', ' should not trim 3 '],
+        ['quoted 1', ' quoted 2', 'quoted 3 ', ' quoted 4 ']
+      ],
+      result = CSV.csvToArray(csv, false);
+    deepEqual(result, expected);
+  });
 
-  ok(Array.isArray(result), 'Result is an array');
-  ok(Array.isArray(result[0]), 'result[0] is an array');
+  test('csvToArray trimmed', function () {
+    var csv = 'no need to trim, should trim 1,should trim 2 , should trim 3 \n"quoted 1"," quoted 2","quoted 3 "," quoted 4 "',
+      expected = [
+        ['no need to trim', 'should trim 1', 'should trim 2', 'should trim 3'],
+        ['quoted 1', ' quoted 2', 'quoted 3 ', ' quoted 4 ']
+      ],
+      result = CSV.csvToArray(csv, true);
+    deepEqual(result, expected);
+  });
 
-  strictEqual(result[0][0], 1);
-  strictEqual(result[0][1], 2);
-  strictEqual(result[0][2], 3);
-  strictEqual(result[1][0], 4);
-  strictEqual(result[1][1], 5);
-  strictEqual(result[1][2], 6);
-});
+  test('csvToArray empty fields are null', function () {
+    var csv = 'Billy West, Fry\nDavid X. Cohen,\nJohn Di Maggio,Bender',
+      expected = [
+        ['Billy West', 'Fry'],
+        ['David X. Cohen', null],
+        ['John Di Maggio', 'Bender']
+      ],
+      result = CSV.csvToArray(csv, true);
 
-test('csvToArray no trim', function () {
-  var csv = 'no need to trim, should not trim 1,should not trim 2 , should not trim 3 \n"quoted 1"," quoted 2","quoted 3 "," quoted 4 "',
-    result = CSV.csvToArray(csv, false);
-  ok(Array.isArray(result), 'Result is an array');
-  strictEqual(result.join('|'), 'no need to trim, should not trim 1,should not trim 2 , should not trim 3 |quoted 1, quoted 2,quoted 3 , quoted 4 ');
-});
+    deepEqual(result, expected);
+  });
 
-test('csvToArray trimmed', function () {
-  var csv = 'no need to trim, should trim 1,should trim 2 , should trim 3 \n"quoted 1"," quoted 2","quoted 3 "," quoted 4 "',
-    result = CSV.csvToArray(csv, true);
-  ok(Array.isArray(result), 'Result is an array');
-  strictEqual(result.join('|'), 'no need to trim,should trim 1,should trim 2,should trim 3|quoted 1, quoted 2,quoted 3 , quoted 4 ');
-});
+  test('csvToArray integers and quoted integers', function () {
+    var csv = '1,2,"3"',
+      expected = [
+        [1, 2, '3']
+      ],
+      result = CSV.csvToArray(csv, true);
+    deepEqual(result, expected);
+  });
 
-test('csvToArray empty fields are null', function () {
-  var csv = 'Billy West, Fry\nDavid X. Cohen,\nJohn Di Maggio,Bender',
-    result = CSV.csvToArray(csv, true);
+  test('csvToArray floats and quoted floats', function () {
+    var csv = '1.5,2.2,"3.14"',
+      expected = [
+        [1.5, 2.2, '3.14']
+      ],
+      result = CSV.csvToArray(csv, true);
 
-  ok(Array.isArray(result), 'Result is an array');
+    deepEqual(result, expected);
+  });
 
-  strictEqual(result[0][0], 'Billy West');
-  strictEqual(result[0][1], 'Fry');
+  test('csvToArray numbers are interpreted as numbers even when not trimming fields', function () {
+    var csv = ' 1 , 2, 3.14',
+      expected = [
+        [1, 2, 3.14]
+      ],
+      result = CSV.csvToArray(csv, true);
+    ok(Array.isArray(result), 'Result is an array');
+    deepEqual(result, expected);
+  });
 
-  strictEqual(result[1][0], 'David X. Cohen');
-  strictEqual(result[1][1], null);
-
-  strictEqual(result[2][0], 'John Di Maggio');
-  strictEqual(result[2][1], 'Bender');
-});
-
-test('csvToArray integers and quoted integers', function () {
-  var csv = '1,2,"3"',
-    result = CSV.csvToArray(csv, true);
-  ok(Array.isArray(result), 'Result is an array');
-  strictEqual(result[0][0], 1);
-  strictEqual(result[0][1], 2);
-  strictEqual(result[0][2], "3");
-});
-
-test('csvToArray floats and quoted floats', function () {
-  var csv = '1.5,2.2,"3.14"',
-    result = CSV.csvToArray(csv, true);
-
-  ok(Array.isArray(result), 'Result is an array');
-  strictEqual(result[0][0], 1.5);
-  strictEqual(result[0][1], 2.2);
-  strictEqual(result[0][2], "3.14");
-});
-
-test('csvToArray numbers are interpreted as numbers even when not trimming fields', function () {
-  var csv = ' 1, 2, 3.14',
-    result = CSV.csvToArray(csv, true);
-  ok(Array.isArray(result), 'Result is an array');
-  deepEqual(result, [[1,2,3.14]]);
-});
-
-
-test('csvToArray newline in string', function () {
-  var csv = 'a,"b\nc",d',
-    result = CSV.csvToArray(csv, true);
-
-  ok(Array.isArray(result), 'Result is an array');
-  strictEqual(result[0][0], 'a');
-  strictEqual(result[0][1], "b\nc");
-  strictEqual(result[0][2], 'd');
-});
+  test('csvToArray newline in string', function () {
+    var csv = 'a,"b\nc",d',
+      expected = [
+        ['a', 'b\nc', 'd']
+      ],
+      result = CSV.csvToArray(csv, true);
+    deepEqual(result, expected);
+  });
+}());
