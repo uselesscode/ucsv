@@ -121,7 +121,8 @@
         @method csvToArray
         @return {Array} The CSV parsed as an array
         @param {String} s The string to convert
-        @param {Boolean} [trm=false] If set to True leading and trailing whitespace is stripped off of each non-quoted field as it is imported
+        @param {Object} [config] Object literal with extra configuration. For historical reasons setting config to `true` is the same as passing `{trim: true}`.
+        @param {Boolean} [config.trim=false] If set to True leading and trailing whitespace is stripped off of each non-quoted field as it is imported
         @for CSV
         @static
         @example
@@ -140,9 +141,17 @@
        //   ['High Performance JavaScript', 'Zakas, Nicholas C.', 2010]
        // ];
       */
-      csvToArray: function (s, trm) {
+      csvToArray: function (s, config) {
         // Get rid of any trailing \n
         s = chomp(s);
+
+        if (config === true) {
+          config = {
+            trim: true
+          };
+        } else {
+          config = config || {};
+        }
 
         var cur = '', // The character we are currently processing.
           inQuote = false,
@@ -150,6 +159,7 @@
           field = '', // Buffer for building up the current field
           row = [],
           out = [],
+          trimIt = config.trim === true ? true : false,
           i,
           processField = function (field) {
             var trimmedField = trim(field);
@@ -158,7 +168,7 @@
               if (field === '') {
                 field = null;
               // If the field was not quoted and we are trimming fields, trim it
-              } else if (trm === true) {
+              } else if (trimIt === true) {
                 field = trimmedField;
               }
 

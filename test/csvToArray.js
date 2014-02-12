@@ -27,7 +27,7 @@
     deepEqual(result, expected);
   });
 
-  test('csvToArray no trim', function () {
+  test('csvToArray no config', function () {
     var csv = 'no need to trim, should not trim 1,should not trim 2 , should not trim 3 \n"quoted 1"," quoted 2","quoted 3 "," quoted 4 "',
       expected = [
         ['no need to trim', ' should not trim 1', 'should not trim 2 ', ' should not trim 3 '],
@@ -60,7 +60,7 @@
     deepEqual(result, expected);
   });
 
-  test('csvToArray no trim', function () {
+  test('csvToArray config === false', function () {
     var csv = 'no need to trim, should not trim 1,should not trim 2 , should not trim 3 \n"quoted 1"," quoted 2","quoted 3 "," quoted 4 "',
       expected = [
         ['no need to trim', ' should not trim 1', 'should not trim 2 ', ' should not trim 3 '],
@@ -70,13 +70,23 @@
     deepEqual(result, expected);
   });
 
-  test('csvToArray trimmed', function () {
+  test('csvToArray config === true (legacy trim)', function () {
     var csv = 'no need to trim, should trim 1,should trim 2 , should trim 3 \n"quoted 1"," quoted 2","quoted 3 "," quoted 4 "',
       expected = [
         ['no need to trim', 'should trim 1', 'should trim 2', 'should trim 3'],
         ['quoted 1', ' quoted 2', 'quoted 3 ', ' quoted 4 ']
       ],
       result = CSV.csvToArray(csv, true);
+    deepEqual(result, expected);
+  });
+
+  test('csvToArray config trim', function () {
+    var csv = 'no need to trim, should trim 1,should trim 2 , should trim 3 \n"quoted 1"," quoted 2","quoted 3 "," quoted 4 "',
+      expected = [
+        ['no need to trim', 'should trim 1', 'should trim 2', 'should trim 3'],
+        ['quoted 1', ' quoted 2', 'quoted 3 ', ' quoted 4 ']
+      ],
+      result = CSV.csvToArray(csv, {trim: true});
     deepEqual(result, expected);
   });
 
