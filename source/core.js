@@ -121,7 +121,7 @@
         @method csvToArray
         @return {Array} The CSV parsed as an array
         @param {String} s The string to convert
-        @param {Object} [config] Object literal with extra configuration. For historical reasons setting config to `true` is the same as passing `{trim: true}`.
+        @param {Object} [config] Object literal with extra configuration. For historical reasons setting config to `true` is the same as passing `{trim: true}`, but this usage is deprecated.
         @param {Boolean} [config.trim=false] If set to True leading and trailing whitespace is stripped off of each non-quoted field as it is imported
         @for CSV
         @static
