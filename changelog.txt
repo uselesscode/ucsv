@@ -1,4 +1,4 @@
-1.1.1
+1.2.0
 ---
 New features and changes
 * New csvToObject and objectToCsv methods to read and write CSV data as an
