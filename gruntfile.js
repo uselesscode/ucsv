@@ -7,6 +7,7 @@ module.exports = function (grunt) {
     baseName = pkg.name + '-' + pkg.version,
     concatenatedPath = 'dist/' + baseName  + '.js',
     minifiedPath = 'dist/' + baseName + '.min.js',
+    outputSrcDir = 'dist/<%= pkg.name %>_<%= pkg.version %>_src/',
     docDir = 'docs/',
     jshintGlobals = {
       //console: true,
@@ -34,16 +35,20 @@ module.exports = function (grunt) {
         src: [
           concatenatedPath,
           concatenatedPath + '.map'
-        ]
-      }
+        ],
+      },
+      removeMaps: [
+        outputSrcDir,
+        minifiedPath + '.map'
+      ]
     },
     concat_sourcemap: {
       options: {
       },
       main: {
-        src: ['dist/<%= pkg.name %>_src/intro.js',
-              'dist/<%= pkg.name %>_src/core.js',
-              'dist/<%= pkg.name %>_src/outro.js'
+        src: [outputSrcDir + 'intro.js',
+              outputSrcDir + 'core.js',
+              outputSrcDir + 'outro.js'
              ],
         dest: concatenatedPath
       }
@@ -65,7 +70,7 @@ module.exports = function (grunt) {
       // concat_sourcemap doesn't seem to supports banners, so banner is in intro.js,
       // search/replace vars
       banner: {
-        src: 'dist/<%= pkg.name %>_src/intro.js',
+        src: outputSrcDir + 'intro.js',
         actions: [
           {
             search: '%pkg.name%',
@@ -119,6 +124,16 @@ module.exports = function (grunt) {
           }
         ]
       },
+      removeMaps: {
+        src: [minifiedPath],
+        actions: [
+          {
+            search: '//.*sourceMappingURL=.*$',
+            replace: '',
+            flags: 'g'
+          }
+        ]
+      },
       test: {
         src: ['dist/test/tests.html'],
         actions: [
@@ -138,7 +153,7 @@ module.exports = function (grunt) {
         expand: true,
         cwd: sourceDir,
         src: ['*.js'],
-        dest: 'dist/<%= pkg.name %>_src/',
+        dest: outputSrcDir,
         filter: 'isFile'
       },
       test: {
@@ -228,9 +243,9 @@ module.exports = function (grunt) {
   var buildCommon = ['copy', 'regex-replace:banner', 'concat_sourcemap', 'uglify', 'regex-replace:postMin', 'copy:test', 'regex-replace:test'];
 
   grunt.registerTask('keepconcat', ['jshint:beforeconcat', 'clean:cleanBuild', 'qunit:preBuild'].concat(buildCommon, ['jshint:afterconcat', 'yuidoc', 'qunit:postBuild']));
-  grunt.registerTask('default', ['keepconcat', 'clean:postBuild']);
+  grunt.registerTask('default', ['keepconcat', 'clean:postBuild', 'regex-replace:removeMaps', 'clean:removeMaps']);
   grunt.registerTask('notest', ['clean:cleanBuild'].concat(buildCommon, ['clean:postBuild']));
-  grunt.registerTask('gz', ['default', 'compress']);
+  grunt.registerTask('gz', ['keepconcat', 'clean:postBuild', 'compress']);
 
   grunt.registerTask('test', ['qunit:preBuild']);
   grunt.registerTask('docs', ['yuidoc']);
