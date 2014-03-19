@@ -247,6 +247,7 @@ module.exports = function (grunt) {
   grunt.registerTask('notest', ['clean:cleanBuild'].concat(buildCommon, ['clean:postBuild']));
   grunt.registerTask('gz', ['keepconcat', 'clean:postBuild', 'compress']);
 
+  grunt.registerTask('cleanup', ['clean:cleanBuild']);
   grunt.registerTask('test', ['qunit:preBuild']);
   grunt.registerTask('docs', ['yuidoc']);
 };
