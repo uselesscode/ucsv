@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>CSV - ucsv</title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <link rel="shortcut icon" type="image/png" href="../assets/favicon.png">
+    <script src="http://yui.yahooapis.com/combo?3.9.1/build/yui/yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div id="hd" class="yui3-g header">
+        <div class="yui3-u-3-4">
+            
+                <h1><img src="../assets/css/logo.png" title="ucsv"></h1>
+            
+        </div>
+        <div class="yui3-u-1-4 version">
+            <em>API Docs for: 1.2.0</em>
+        </div>
+    </div>
+    <div id="bd" class="yui3-g">
+
+        <div class="yui3-u-1-4">
+            <div id="docs-sidebar" class="sidebar apidocs">
+                <div id="api-list">
+    <h2 class="off-left">APIs</h2>
+    <div id="api-tabview" class="tabview">
+        <ul class="tabs">
+            <li><a href="#api-classes">Classes</a></li>
+            <li><a href="#api-modules">Modules</a></li>
+        </ul>
+
+        <div id="api-tabview-filter">
+            <input type="search" id="api-filter" placeholder="Type to filter APIs">
+        </div>
+
+        <div id="api-tabview-panel">
+            <ul id="api-classes" class="apis classes">
+            
+                <li><a href="../classes/CSV.html">CSV</a></li>
+            
+            </ul>
+
+            <ul id="api-modules" class="apis modules">
+            
+            </ul>
+        </div>
+    </div>
+</div>
+
+            </div>
+        </div>
+        <div class="yui3-u-3-4">
+                <div id="api-options">
+        Show:
+        <label for="api-show-inherited">
+            <input type="checkbox" id="api-show-inherited" checked>
+            Inherited
+        </label>
+
+        <label for="api-show-protected">
+            <input type="checkbox" id="api-show-protected">
+            Protected
+        </label>
+
+        <label for="api-show-private">
+            <input type="checkbox" id="api-show-private">
+            Private
+        </label>
+        <label for="api-show-deprecated">
+            <input type="checkbox" id="api-show-deprecated">
+            Deprecated
+        </label>
+
+    </div>
+
+
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+                        <h1>CSV Class</h1>
+<div class="box meta">
+    
+
+    
+
+    
+
+    
+
+    
+</div>
+
+
+
+<div class="box intro">
+    
+</div>
+
+
+
+<div id="classdocs" class="tabview">
+    <ul class="api-class-tabs">
+        <li class="api-class-tab index"><a href="#index">Index</a></li>
+
+        
+            <li class="api-class-tab methods"><a href="#methods">Methods</a></li>
+        
+        
+        
+        
+    </ul>
+
+    <div>
+        <div id="index" class="api-class-tabpanel index">
+            <h2 class="off-left">Item Index</h2>
+
+            
+                <div class="index-section methods">
+                    <h3>Methods</h3>
+
+                    <ul class="index-list methods">
+                        
+                            <li class="index-item method public">
+                                <a href="#method_arrayToCsv">arrayToCsv</a>
+
+                                
+                                    <span class="flag static">static</span>
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method">
+                                <a href="#method_csvToArray">csvToArray</a>
+
+                                
+                                    <span class="flag static">static</span>
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method">
+                                <a href="#method_csvToObject">csvToObject</a>
+
+                                
+                                    <span class="flag static">static</span>
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method">
+                                <a href="#method_objectToCsv">objectToCsv</a>
+
+                                
+                                    <span class="flag static">static</span>
+                                
+                                
+                            </li>
+                        
+                    </ul>
+                </div>
+            
+
+            
+
+            
+
+            
+        </div>
+
+        
+            <div id="methods" class="api-class-tabpanel">
+                <h2 class="off-left">Methods</h2>
+
+                
+                    <div id="method_arrayToCsv" class="method item public">
+    <h3 class="name"><code>arrayToCsv</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>a</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+        <span class="returns-inline">
+            <span class="type">String</span>
+        </span>
+    
+
+    
+
+    
+        <span class="flag public">public</span>
+    
+
+    
+
+    
+        <span class="flag static">static</span>
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/source_core.js.html#l60"><code>source\core.js:60</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Converts an array into a Comma Separated Values string.
+Each item in the array should be an array that represents one row in the CSV.
+Nulls and undefined values are interpreted as empty fields.</p>
+
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">a</code>
+                        <span class="type">String</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>The array to convert</p>
+
+                    </div>
+
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                        <span class="type">String</span>:
+                    
+                    <p>A CSV representation of the provided array.</p>
+
+                
+            </div>
+        </div>
+    
+
+    
+        <div class="example">
+            <h4>Example:</h4>
+
+            <div class="example-content">
+                <pre class="code prettyprint"><code>var csv,
+  books = [
+    [&#39;JavaScript: The Good Parts&#39;, &#39;Crockford, Douglas&#39;, 2008],
+    [&#39;Object-Oriented JavaScript&#39;, &#39;Stefanov, Stoyan&#39;, 2008],
+    [&#39;Effective JavaScript&#39;, &#39;Herman, David&#39;, 2012]
+  ];
+
+csv = CSV.arrayToCsv(books);
+
+// csv now contains:
+//
+// JavaScript: The Good Parts,&quot;Crockford, Douglas&quot;,2008\n
+// Object-Oriented JavaScript,&quot;Stefanov, Stoyan&quot;,2008\n
+// Effective JavaScript,&quot;Herman, David&quot;,2012\n</code></pre>
+
+            </div>
+        </div>
+    
+</div>
+
+                
+                    <div id="method_csvToArray" class="method item">
+    <h3 class="name"><code>csvToArray</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>s</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code class="optional">[config]</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+        <span class="returns-inline">
+            <span class="type">Array</span>
+        </span>
+    
+
+    
+
+    
+
+    
+
+    
+        <span class="flag static">static</span>
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/source_core.js.html#l111"><code>source\core.js:111</code></a>
+        
+        </p>
+
+
+        
+
+        
+    </div>
+
+    <div class="description">
+        <p>Converts a Comma Separated Values string into a multi-dimensional array.
+Each row in the CSV becomes an array.
+Empty fields are converted to nulls and non-quoted numbers are converted to integers or floats.</p>
+
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">s</code>
+                        <span class="type">String</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>The string to convert</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name optional">[config]</code>
+                        <span class="type">Object</span>
+                        <span class="flag optional" title="This parameter is optional.">optional</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>Object literal with extra configuration. For historical reasons setting config to <code>true</code> is the same as passing <code>{trim: true}</code>, but this usage is deprecated and will likely be removed in the next version.</p>
+
+                    </div>
+
+                    
+                        <ul class="params-list">
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[trim=false]</code>
+                                    <span class="type">Boolean</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>If set to True leading and trailing whitespace is stripped off of each non-quoted field as it is imported</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                        </ul>
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                        <span class="type">Array</span>:
+                    
+                    <p>The CSV parsed as an array</p>
+
+                
+            </div>
+        </div>
+    
+
+    
+        <div class="example">
+            <h4>Example:</h4>
+
+            <div class="example-content">
+                <pre class="code prettyprint"><code>var books,
+  csv = &#39;JavaScript: The Good Parts,&quot;Crockford, Douglas&quot;,2008\n&#39; +
+    &#39;Object-Oriented JavaScript,&quot;Stefanov, Stoyan&quot;,2008\n&#39; +
+    &#39;Effective JavaScript,&quot;Herman, David&quot;,2012\n&#39;;
+
+books = CSV.csvToArray(csv);
+
+// books now equals:
+// [
+//   [&#39;JavaScript: The Good Parts&#39;, &#39;Crockford, Douglas&#39;, 2008],
+//   [&#39;Object-Oriented JavaScript&#39;, &#39;Stefanov, Stoyan&#39;, 2008],
+//   [&#39;Effective JavaScript&#39;, &#39;Herman, David&#39;, 2012]
+// ];</code></pre>
+
+            </div>
+        </div>
+    
+</div>
+
+                
+                    <div id="method_csvToObject" class="method item">
+    <h3 class="name"><code>csvToObject</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>s</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code>config</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+        <span class="returns-inline">
+            <span class="type">Array</span>
+        </span>
+    
+
+    
+
+    
+
+    
+
+    
+        <span class="flag static">static</span>
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/source_core.js.html#l224"><code>source\core.js:224</code></a>
+        
+        </p>
+
+
+        
+
+        
+            <p>Available since 1.2.0</p>
+        
+    </div>
+
+    <div class="description">
+        <p>Converts a Comma Separated Values string into an array of objects.
+Each row in the CSV becomes an object with properties named after each column.
+Empty fields are converted to nulls and non-quoted numbers are converted to integers or floats.</p>
+
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">s</code>
+                        <span class="type">String</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>The string containing CSV data to convert</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name">config</code>
+                        <span class="type">Object</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>Object literal with extra configuration</p>
+
+                    </div>
+
+                    
+                        <ul class="params-list">
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[columns]</code>
+                                    <span class="type">Array</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>An array containing the name of each column in the CSV data. If not
+  provided, the first row of the CSV data is assumed to contain the column names.</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[trim]</code>
+                                    <span class="type">Boolean</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>If true any field parsed from the CSV data will have leading and
+                               trailing whitespace trimmed</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                        </ul>
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                        <span class="type">Array</span>:
+                    
+                    <p>The CSV parsed as an array of objects</p>
+
+                
+            </div>
+        </div>
+    
+
+    
+        <div class="example">
+            <h4>Example:</h4>
+
+            <div class="example-content">
+                <pre class="code prettyprint"><code>var books,
+  csv = &#39;title,author,year\n&#39; +
+    &#39;JavaScript: The Good Parts,&quot;Crockford, Douglas&quot;,2008\n&#39; +
+    &#39;Object-Oriented JavaScript,&quot;Stefanov, Stoyan&quot;,2008\n&#39; +
+    &#39;Effective JavaScript,&quot;Herman, David&quot;,2012\n&#39;;
+
+books = CSV.csvToObject(csv);
+
+// books now equals:
+// [
+//   {
+//     title: &#39;JavaScript: The Good Parts&#39;,
+//     author: &#39;Crockford, Douglas&#39;,
+//     year: 2008
+//   },
+//   {
+//     title: &#39;Object-Oriented JavaScript&#39;,
+//     author: &#39;Stefanov, Stoyan&#39;,
+//     year: 2008
+//   },
+//   {
+//     title: &#39;Effective JavaScript&#39;,
+//     author: &#39;Herman, David&#39;,
+//     year: 2012
+//   }
+// ];</code></pre>
+
+            </div>
+        </div>
+    
+</div>
+
+                
+                    <div id="method_objectToCsv" class="method item">
+    <h3 class="name"><code>objectToCsv</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>arr</code>
+                    
+                </li>
+            
+                <li class="arg">
+                    
+                        <code>config</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+        <span class="returns-inline">
+            <span class="type">String</span>
+        </span>
+    
+
+    
+
+    
+
+    
+
+    
+        <span class="flag static">static</span>
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="../files/source_core.js.html#l291"><code>source\core.js:291</code></a>
+        
+        </p>
+
+
+        
+
+        
+            <p>Available since 1.2.0</p>
+        
+    </div>
+
+    <div class="description">
+        <p>Converts an array of objects into Comma Separated Values data
+Each propery on the objects becomes a column in the CSV data.</p>
+
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">arr</code>
+                        <span class="type">String</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>An array of objects to be converted into CSV</p>
+
+                    </div>
+
+                    
+                </li>
+            
+                <li class="param">
+                    
+                        <code class="param-name">config</code>
+                        <span class="type">Object</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        <p>Object literal with extra configuration</p>
+
+                    </div>
+
+                    
+                        <ul class="params-list">
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[columns]</code>
+                                    <span class="type">Array</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>An array containing the name of each column in the CSV data. If not
+  provided, the column names will be inferred from the property names of the objects. Explicitly
+  defining column names has several advantages:</p>
+<ul>
+<li>It is faster since all column names are already known.</li>
+<li>It allows you to specify a subset of the properties to use if you wish to.</li>
+<li>It allows you to control what order the columns are output in, since the <code>for...in</code> statement used to infer field names does not guarantee a specific order.</li>
+</ul>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[includeColumns=true]</code>
+                                    <span class="type">Boolean</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>By default <code>objectToCsv</code> outputs the column names as
+  the first row of the CSV data. Set to false to prevent this.</p>
+
+                                </div>
+
+                                
+                            </li>
+                            
+                        </ul>
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                        <span class="type">String</span>:
+                    
+                    <p>CSV data, each row representing an object from the input array, each field representing a property from those objects</p>
+
+                
+            </div>
+        </div>
+    
+
+    
+        <div class="example">
+            <h4>Example:</h4>
+
+            <div class="example-content">
+                <pre class="code prettyprint"><code>var csv,
+  books = [
+    {
+      title: &#39;JavaScript: The Good Parts&#39;,
+      author: &#39;Crockford, Douglas&#39;,
+      year: 2008
+    },
+    {
+      title: &#39;Object-Oriented JavaScript&#39;,
+      author: &#39;Stefanov, Stoyan&#39;,
+      year: 2008
+    },
+    {
+      title: &#39;Effective JavaScript&#39;,
+      author: &#39;Herman, David&#39;,
+      year: 2012
+    }
+  ];
+
+csv = CSV.objectToCsv(books);
+
+// csv now contains:
+//
+// title,author,year\n
+// JavaScript: The Good Parts,&quot;Crockford, Douglas&quot;,2008\n
+// Object-Oriented JavaScript,&quot;Stefanov, Stoyan&quot;,2008\n
+// Effective JavaScript,&quot;Herman, David&quot;,2012\n</code></pre>
+
+            </div>
+        </div>
+    
+</div>
+
+                
+            </div>
+        
+
+        
+
+        
+
+        
+    </div>
+</div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="../assets/js/yui-prettify.js"></script>
+<script src="../assets/../api.js"></script>
+<script src="../assets/js/api-filter.js"></script>
+<script src="../assets/js/api-list.js"></script>
+<script src="../assets/js/api-search.js"></script>
+<script src="../assets/js/apidocs.js"></script>
+</body>
+</html>
