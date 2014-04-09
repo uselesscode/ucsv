@@ -5,6 +5,10 @@ New features and changes
   array of objects.
 * Converted build system from Apache Ant to Grunt.
 * Converted documentation from JSDoc to YUIDoc.
+* csvToArray now takes a configuration object as it's second parameter instead
+  of a boolean. In this version the old semantic is still supported but
+  deprecated and will likely be removed in the next version due to upcoming
+  backwards compatibility breaking changes in the library.
 
 Bug fixes
 * If an undefined value is in the input to arrayToCsv it will now be considered

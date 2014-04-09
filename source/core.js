@@ -58,9 +58,9 @@
 
     CSV = {
       /**
-       Converts an array into a Comma Separated Values list.
-       Each item in the array should be an array that represents one line in the CSV.
-       Nulls are interpreted as empty fields.
+       Converts an array into a Comma Separated Values string.
+       Each item in the array should be an array that represents one row in the CSV.
+       Nulls and undefined values are interpreted as empty fields.
 
        @method arrayToCsv
        @param {String} a The array to convert
@@ -70,25 +70,20 @@
        @public
        @static
        @example
+           var csv,
+             books = [
+               ['JavaScript: The Good Parts', 'Crockford, Douglas', 2008],
+               ['Object-Oriented JavaScript', 'Stefanov, Stoyan', 2008],
+               ['Effective JavaScript', 'Herman, David', 2012]
+             ];
 
-       var csv,
-         books = [
-           ['JavaScript: The Good Parts', 'Crockford, Douglas', 2008],
-           ['Object-Oriented JavaScript', 'Stefanov, Stoyan', 2008],
-           ['High Performance JavaScript', 'Zakas, Nicholas C.', 2010]
-         ];
+           csv = CSV.arrayToCsv(books);
 
-       csv = CSV.arrayToCsv(books);
-
-       // CSV now contains:
-       //
-       // JavaScript: The Good Parts,"Crockford, Douglas",2008\n
-       // Object-Oriented JavaScript,"Stefanov, Stoyan",2008\n
-       // High Performance JavaScript,"Zakas, Nicholas C.",2010\n
-
-
-
-
+           // csv now contains:
+           //
+           // JavaScript: The Good Parts,"Crockford, Douglas",2008\n
+           // Object-Oriented JavaScript,"Stefanov, Stoyan",2008\n
+           // Effective JavaScript,"Herman, David",2012\n
       */
       arrayToCsv: function (a) {
         var cur,
@@ -114,32 +109,31 @@
       },
 
       /**
-        Converts a Comma Separated Values string into an array of arrays.
-        Each line in the CSV becomes an array.
+        Converts a Comma Separated Values string into a multi-dimensional array.
+        Each row in the CSV becomes an array.
         Empty fields are converted to nulls and non-quoted numbers are converted to integers or floats.
 
         @method csvToArray
         @return {Array} The CSV parsed as an array
         @param {String} s The string to convert
-        @param {Object} [config] Object literal with extra configuration. For historical reasons setting config to `true` is the same as passing `{trim: true}`, but this usage is deprecated.
+        @param {Object} [config] Object literal with extra configuration. For historical reasons setting config to `true` is the same as passing `{trim: true}`, but this usage is deprecated and will likely be removed in the next version.
         @param {Boolean} [config.trim=false] If set to True leading and trailing whitespace is stripped off of each non-quoted field as it is imported
         @for CSV
         @static
         @example
+            var books,
+              csv = 'JavaScript: The Good Parts,"Crockford, Douglas",2008\n' +
+                'Object-Oriented JavaScript,"Stefanov, Stoyan",2008\n' +
+                'Effective JavaScript,"Herman, David",2012\n';
 
-       var books,
-         csv = 'JavaScript: The Good Parts,"Crockford, Douglas",2008\n' +
-           'Object-Oriented JavaScript,"Stefanov, Stoyan",2008\n' +
-           'High Performance JavaScript,"Zakas, Nicholas C.",2010\n';
+            books = CSV.csvToArray(csv);
 
-       books = CSV.csvToArray(csv);
-
-       // Books now equals:
-       // [
-       //   ['JavaScript: The Good Parts', 'Crockford, Douglas', 2008],
-       //   ['Object-Oriented JavaScript', 'Stefanov, Stoyan', 2008],
-       //   ['High Performance JavaScript', 'Zakas, Nicholas C.', 2010]
-       // ];
+            // books now equals:
+            // [
+            //   ['JavaScript: The Good Parts', 'Crockford, Douglas', 2008],
+            //   ['Object-Oriented JavaScript', 'Stefanov, Stoyan', 2008],
+            //   ['Effective JavaScript', 'Herman, David', 2012]
+            // ];
       */
       csvToArray: function (s, config) {
         // Get rid of any trailing \n
@@ -229,7 +223,7 @@
       },
       /**
         Converts a Comma Separated Values string into an array of objects.
-        Each line in the CSV becomes an object with properties named after each column.
+        Each row in the CSV becomes an object with properties named after each column.
         Empty fields are converted to nulls and non-quoted numbers are converted to integers or floats.
 
         @method csvToObject
@@ -244,33 +238,32 @@
         @for CSV
         @static
         @example
+            var books,
+              csv = 'title,author,year\n' +
+                'JavaScript: The Good Parts,"Crockford, Douglas",2008\n' +
+                'Object-Oriented JavaScript,"Stefanov, Stoyan",2008\n' +
+                'Effective JavaScript,"Herman, David",2012\n';
 
-        var books,
-          csv = 'title,author,year\n' +
-            'JavaScript: The Good Parts,"Crockford, Douglas",2008\n' +
-            'Object-Oriented JavaScript,"Stefanov, Stoyan",2008\n' +
-            'High Performance JavaScript,"Zakas, Nicholas C.",2010\n';
+            books = CSV.csvToObject(csv);
 
-        books = CSV.csvToObject(csv);
-
-        // Books now equals:
-        // [
-        //   {
-        //     title: 'JavaScript: The Good Parts',
-        //     author: 'Crockford, Douglas',
-        //     year: 2008
-        //   },
-        //   {
-        //     title: 'Object-Oriented JavaScript',
-        //     author: 'Stefanov, Stoyan',
-        //     year: 2008
-        //   },
-        //   {
-        //     title: 'High Performance JavaScript',
-        //     author: 'Zakas, Nicholas C.',
-        //     year: 2010
-        //   }
-        // ];
+            // books now equals:
+            // [
+            //   {
+            //     title: 'JavaScript: The Good Parts',
+            //     author: 'Crockford, Douglas',
+            //     year: 2008
+            //   },
+            //   {
+            //     title: 'Object-Oriented JavaScript',
+            //     author: 'Stefanov, Stoyan',
+            //     year: 2008
+            //   },
+            //   {
+            //     title: 'Effective JavaScript',
+            //     author: 'Herman, David',
+            //     year: 2012
+            //   }
+            // ];
       */
       csvToObject: function (s, config) {
         config = config !== undefined ? config : {};
@@ -308,44 +301,42 @@
           provided, the column names will be inferred from the property names of the objects. Explicitly
           defining column names has several advantages:
 
-          * It allows you to specify a subset of the properties to use if you wish
-          * It allows you to control what order the columns are output in, since for...in does not guarantee a specific order.
-          * It is faster since all column names are already known
+          * It is faster since all column names are already known.
+          * It allows you to specify a subset of the properties to use if you wish to.
+          * It allows you to control what order the columns are output in, since the `for...in` statement used to infer field names does not guarantee a specific order.
 
         @param {Boolean} [config.includeColumns=true] By default `objectToCsv` outputs the column names as
           the first row of the CSV data. Set to false to prevent this.
         @for CSV
         @static
         @example
+            var csv,
+              books = [
+                {
+                  title: 'JavaScript: The Good Parts',
+                  author: 'Crockford, Douglas',
+                  year: 2008
+                },
+                {
+                  title: 'Object-Oriented JavaScript',
+                  author: 'Stefanov, Stoyan',
+                  year: 2008
+                },
+                {
+                  title: 'Effective JavaScript',
+                  author: 'Herman, David',
+                  year: 2012
+                }
+              ];
 
+            csv = CSV.objectToCsv(books);
 
-        var csv,
-          books = [
-            {
-              title: 'JavaScript: The Good Parts',
-              author: 'Crockford, Douglas',
-              year: 2008
-            },
-            {
-              title: 'Object-Oriented JavaScript',
-              author: 'Stefanov, Stoyan',
-              year: 2008
-            },
-            {
-              title: 'High Performance JavaScript',
-              author: 'Zakas, Nicholas C.',
-              year: 2010
-            }
-          ];
-
-        csv = CSV.objectToCsv(books);
-
-        // CSV now contains:
-        //
-        // title,author,year\n
-        // JavaScript: The Good Parts,"Crockford, Douglas",2008\n
-        // Object-Oriented JavaScript,"Stefanov, Stoyan",2008\n
-        // High Performance JavaScript,"Zakas, Nicholas C.",2010\n
+            // csv now contains:
+            //
+            // title,author,year\n
+            // JavaScript: The Good Parts,"Crockford, Douglas",2008\n
+            // Object-Oriented JavaScript,"Stefanov, Stoyan",2008\n
+            // Effective JavaScript,"Herman, David",2012\n
       */
       objectToCsv: function (arr, config) {
         config = config !== undefined ? config : {};

@@ -159,7 +159,7 @@ module.exports = function (grunt) {
       test: {
         expand: true,
         cwd: 'test/',
-        src: ['arrayToCsv.js', 'csvToArray.js', 'csvToObject', 'objectToCsv', 'lib/*', 'tests.html'],
+        src: ['arrayToCsv.js', 'csvToArray.js', 'csvToObject.js', 'objectToCsv.js', 'lib/*', 'tests.html'],
         dest: 'dist/test/',
         filter: 'isFile'
       }
