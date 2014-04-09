@@ -10,11 +10,10 @@
         return function (s) {
           return s.trim();
         };
-      } else {
-        return function (s) {
-          return s.replace(/^\s*/, '').replace(/\s*$/, '');
-        };
       }
+      return function (s) {
+        return s.replace(/^\s*/, '').replace(/\s*$/, '');
+      };
     }()),
 
     isNumber = function (o) {
@@ -29,36 +28,62 @@
       if (s.charAt(s.length - 1) !== "\n") {
         // Does not end with \n, just return string
         return s;
-      } else {
-        // Remove the \n
-        return s.substring(0, s.length - 1);
       }
+      // Remove the \n
+      return s.substring(0, s.length - 1);
+    },
+
+    prepField = function (field) {
+      if (isString(field)) {
+        // Escape any " with double " ("")
+        field = field.replace(/"/g, '""');
+
+        // If the field starts or ends with whitespace, contains " or , or a newline or
+        // is a string representing a number, quote it.
+        if (rxNeedsQuoting.test(field) || rxIsInt.test(field) || rxIsFloat.test(field)) {
+          field = '"' + field + '"';
+        // quote empty strings
+        } else if (field === "") {
+          field = '""';
+        }
+      } else if (isNumber(field)) {
+        field = field.toString(10);
+      } else if (field === null || field === undefined) {
+        field = '';
+      } else {
+        field = field.toString();
+      }
+      return field;
     },
 
     CSV = {
       /**
-       Converts an array into a Comma Separated Values list.
-       Each item in the array should be an array that represents one line in the CSV.
-       Nulls are interpreted as empty fields.
-       
+       Converts an array into a Comma Separated Values string.
+       Each item in the array should be an array that represents one row in the CSV.
+       Nulls and undefined values are interpreted as empty fields.
+
        @method arrayToCsv
        @param {String} a The array to convert
-       
+
        @returns {String} A CSV representation of the provided array.
        @for CSV
        @public
        @static
        @example
-           var csvArray = [
-           ['Leno, Jay', 10],
-           ['Conan "Conando" O\'Brien', '11:35' ],
-           ['Fallon, Jimmy', '12:35' ]
-           ];
-           CSV.arrayToCsv(csvArray);
-           // Outputs a string containing:
-           // "Leno, Jay",10
-           // "Conan ""Conando"" O'Brien",11:35
-           // "Fallon, Jimmy",12:35
+           var csv,
+             books = [
+               ['JavaScript: The Good Parts', 'Crockford, Douglas', 2008],
+               ['Object-Oriented JavaScript', 'Stefanov, Stoyan', 2008],
+               ['Effective JavaScript', 'Herman, David', 2012]
+             ];
+
+           csv = CSV.arrayToCsv(books);
+
+           // csv now contains:
+           //
+           // JavaScript: The Good Parts,"Crockford, Douglas",2008\n
+           // Object-Oriented JavaScript,"Stefanov, Stoyan",2008\n
+           // Effective JavaScript,"Herman, David",2012\n
       */
       arrayToCsv: function (a) {
         var cur,
@@ -72,24 +97,7 @@
           for (j = 0; j < row.length; j += 1) {
             cur = row[j];
 
-            if (isString(cur)) {
-              // Escape any " with double " ("")
-              cur = cur.replace(/"/g, '""');
-
-              // If the field starts or ends with whitespace, contains " or , or is a string representing a number
-              if (rxNeedsQuoting.test(cur) || rxIsInt.test(cur) || rxIsFloat.test(cur)) {
-                cur = '"' + cur + '"';
-              // quote empty strings
-              } else if (cur === "") {
-                cur = '""';
-              }
-            } else if (isNumber(cur)) {
-              cur = cur.toString(10);
-            } else if (cur === null) {
-              cur = '';
-            } else {
-              cur = cur.toString();
-            }
+            cur = prepField(cur);
 
             out += j < row.length - 1 ? cur + ',' : cur;
           }
@@ -101,33 +109,43 @@
       },
 
       /**
-        Converts a Comma Separated Values string into an array of arrays.
-        Each line in the CSV becomes an array.
+        Converts a Comma Separated Values string into a multi-dimensional array.
+        Each row in the CSV becomes an array.
         Empty fields are converted to nulls and non-quoted numbers are converted to integers or floats.
-       
+
         @method csvToArray
         @return {Array} The CSV parsed as an array
         @param {String} s The string to convert
-        @param {Boolean} [trm=false] If set to True leading and trailing whitespace is stripped off of each non-quoted field as it is imported
+        @param {Object} [config] Object literal with extra configuration. For historical reasons setting config to `true` is the same as passing `{trim: true}`, but this usage is deprecated and will likely be removed in the next version.
+        @param {Boolean} [config.trim=false] If set to True leading and trailing whitespace is stripped off of each non-quoted field as it is imported
         @for CSV
         @static
         @example
-            var csv = '"Leno, Jay",10' + "\n" +
-            '"Conan ""Conando"" O\'Brien",11:35' + "\n" +
-            '"Fallon, Jimmy",12:35' + "\n";
-       
-            var array = CSV.csvToArray(csv);
-            
-            // array is now
+            var books,
+              csv = 'JavaScript: The Good Parts,"Crockford, Douglas",2008\n' +
+                'Object-Oriented JavaScript,"Stefanov, Stoyan",2008\n' +
+                'Effective JavaScript,"Herman, David",2012\n';
+
+            books = CSV.csvToArray(csv);
+
+            // books now equals:
             // [
-            // ['Leno, Jay', 10],
-            // ['Conan "Conando" O\'Brien', '11:35' ],
-            // ['Fallon, Jimmy', '12:35' ]
+            //   ['JavaScript: The Good Parts', 'Crockford, Douglas', 2008],
+            //   ['Object-Oriented JavaScript', 'Stefanov, Stoyan', 2008],
+            //   ['Effective JavaScript', 'Herman, David', 2012]
             // ];
       */
-      csvToArray: function (s, trm) {
+      csvToArray: function (s, config) {
         // Get rid of any trailing \n
         s = chomp(s);
+
+        if (config === true) {
+          config = {
+            trim: true
+          };
+        } else {
+          config = config || {};
+        }
 
         var cur = '', // The character we are currently processing.
           inQuote = false,
@@ -135,28 +153,26 @@
           field = '', // Buffer for building up the current field
           row = [],
           out = [],
+          trimIt = config.trim === true ? true : false,
           i,
-          processField;
+          processField = function (field) {
+            var trimmedField = trim(field);
+            if (fieldQuoted !== true) {
+              // If field is empty set to null
+              if (field === '') {
+                field = null;
+              // If the field was not quoted and we are trimming fields, trim it
+              } else if (trimIt === true) {
+                field = trimmedField;
+              }
 
-        processField = function (field) {
-          if (fieldQuoted !== true) {
-            // If field is empty set to null
-            if (field === '') {
-              field = null;
-            // If the field was not quoted and we are trimming fields, trim it
-            } else if (trm === true) {
-              field = trim(field);
+              // Convert unquoted numbers to numbers
+              if (rxIsInt.test(trimmedField) || rxIsFloat.test(trimmedField)) {
+                field = +trimmedField;
+              }
             }
-
-            // Convert unquoted numbers to their appropriate types
-            if (rxIsInt.test(field)) {
-              field = parseInt(field, 10);
-            } else if (rxIsFloat.test(field)) {
-              field = parseFloat(field, 10);
-            }
-          }
-          return field;
-        };
+            return field;
+          };
 
         for (i = 0; i < s.length; i += 1) {
           cur = s.charAt(i);
@@ -204,5 +220,220 @@
         out.push(row);
 
         return out;
+      },
+      /**
+        Converts a Comma Separated Values string into an array of objects.
+        Each row in the CSV becomes an object with properties named after each column.
+        Empty fields are converted to nulls and non-quoted numbers are converted to integers or floats.
+
+        @method csvToObject
+        @since 1.2.0
+        @return {Array} The CSV parsed as an array of objects
+        @param {String} s The string containing CSV data to convert
+        @param {Object} config Object literal with extra configuration
+        @param {Array} [config.columns] An array containing the name of each column in the CSV data. If not
+          provided, the first row of the CSV data is assumed to contain the column names.
+        @param {Boolean} [config.trim] If true any field parsed from the CSV data will have leading and
+                                       trailing whitespace trimmed
+        @for CSV
+        @static
+        @example
+            var books,
+              csv = 'title,author,year\n' +
+                'JavaScript: The Good Parts,"Crockford, Douglas",2008\n' +
+                'Object-Oriented JavaScript,"Stefanov, Stoyan",2008\n' +
+                'Effective JavaScript,"Herman, David",2012\n';
+
+            books = CSV.csvToObject(csv);
+
+            // books now equals:
+            // [
+            //   {
+            //     title: 'JavaScript: The Good Parts',
+            //     author: 'Crockford, Douglas',
+            //     year: 2008
+            //   },
+            //   {
+            //     title: 'Object-Oriented JavaScript',
+            //     author: 'Stefanov, Stoyan',
+            //     year: 2008
+            //   },
+            //   {
+            //     title: 'Effective JavaScript',
+            //     author: 'Herman, David',
+            //     year: 2012
+            //   }
+            // ];
+      */
+      csvToObject: function (s, config) {
+        config = config !== undefined ? config : {};
+        var columns = config.columns,
+            trimIt = !!config.trim,
+            csvArray = this.csvToArray(s, trimIt);
+
+        // if columns were not provided, assume they are
+        // in the first row
+        if (!columns) {
+          columns = csvArray.shift();
+        }
+
+        return csvArray.map(function (row) {
+          var obj = {},
+            i = 0,
+            len = columns.length;
+          for (; i < len; i += 1) {
+            obj[columns[i]] = row[i];
+          }
+          return obj;
+        });
+      },
+
+      /**
+        Converts an array of objects into Comma Separated Values data
+        Each propery on the objects becomes a column in the CSV data.
+
+        @method objectToCsv
+        @since 1.2.0
+        @return {String} CSV data, each row representing an object from the input array, each field representing a property from those objects
+        @param {String} arr An array of objects to be converted into CSV
+        @param {Object} config Object literal with extra configuration
+        @param {Array} [config.columns] An array containing the name of each column in the CSV data. If not
+          provided, the column names will be inferred from the property names of the objects. Explicitly
+          defining column names has several advantages:
+
+          * It is faster since all column names are already known.
+          * It allows you to specify a subset of the properties to use if you wish to.
+          * It allows you to control what order the columns are output in, since the `for...in` statement used to infer field names does not guarantee a specific order.
+
+        @param {Boolean} [config.includeColumns=true] By default `objectToCsv` outputs the column names as
+          the first row of the CSV data. Set to false to prevent this.
+        @for CSV
+        @static
+        @example
+            var csv,
+              books = [
+                {
+                  title: 'JavaScript: The Good Parts',
+                  author: 'Crockford, Douglas',
+                  year: 2008
+                },
+                {
+                  title: 'Object-Oriented JavaScript',
+                  author: 'Stefanov, Stoyan',
+                  year: 2008
+                },
+                {
+                  title: 'Effective JavaScript',
+                  author: 'Herman, David',
+                  year: 2012
+                }
+              ];
+
+            csv = CSV.objectToCsv(books);
+
+            // csv now contains:
+            //
+            // title,author,year\n
+            // JavaScript: The Good Parts,"Crockford, Douglas",2008\n
+            // Object-Oriented JavaScript,"Stefanov, Stoyan",2008\n
+            // Effective JavaScript,"Herman, David",2012\n
+      */
+      objectToCsv: function (arr, config) {
+        config = config !== undefined ? config : {};
+        var columns = config.columns,
+          includeColumns = config.includeColumns,
+          csv = '',
+          csvColumns = '',
+          processKnownColumns = function (obj) {
+            var out = '',
+              prop,
+              i,
+              len = arr.length,
+              j,
+              jlen = columns.length;
+
+            for (i = 0; i < len; i += 1) {
+              obj = arr[i];
+              for (j = 0; j < jlen; j += 1) {
+                prop = columns[j];
+                out += prepField(obj[prop]);
+                out += j < jlen - 1 ? ',' : '';
+              }
+              out += '\n';
+            }
+            return out;
+          },
+          processUnknownColumns = function () {
+            var cols = [],
+              firstRowLength,
+              finalRowLength,
+              obj,
+              prop,
+              i,
+              currentCol,
+              len = arr.length,
+              row,
+              out = [];
+
+            for (i = 0; i < len; i += 1) {
+              obj = arr[i];
+              row = [];
+
+              // loop over all props in obj,
+              for (prop in obj) {
+                if (obj.hasOwnProperty(prop)) {
+                  currentCol = cols.indexOf(prop);
+                  // if this prop does not have a column yet
+                  if (currentCol === -1) {
+                    currentCol = cols.push(prop);
+                    currentCol -= 1;
+                  }
+                  row[currentCol] = prepField(obj[prop]);
+                }
+              }
+
+              if (i === 0) {
+                firstRowLength = row.length;
+              }
+
+              out.push(row);
+            }
+
+            finalRowLength = cols.length;
+
+            // if some objects had properties that weren't on all the object
+            // we need to resize each row.
+            if (firstRowLength !== finalRowLength) {
+              out.forEach(function (row) {
+                row.length = finalRowLength;
+              });
+            }
+
+            // export cols to our parent scope so
+            // includeColumns can use it
+            columns = cols;
+
+            return out.map(function (row) {
+              return row.join(',');
+            }).join('\n') + '\n';
+          };
+
+        includeColumns = includeColumns === undefined ? true : !!includeColumns;
+
+        if (columns !== undefined) {
+          csv = processKnownColumns();
+        } else {
+          csv = processUnknownColumns();
+        }
+
+        if (includeColumns) {
+          columns.forEach(function (col) {
+            csvColumns += prepField(col) + ',';
+          });
+          csvColumns = csvColumns.substring(0, csvColumns.length - 1);
+          csv = csvColumns + '\n' + csv;
+        }
+
+        return csv;
       }
     };

@@ -6,8 +6,10 @@
 
 /* jsLint stuff */
 /*global exports */
-/*members apply, arrayToCsv, charAt, csvToArray, length, prototype, push,
- replace, substring, test, toString, trim
+/*members arrayToCsv, csvToArray, csvToObject, objectToCsv, apply,
+ charAt, length, prototype, push, replace, substring, test, toString,
+ trim, columns, shift, map, includeColumns, hasOwnProperty, indexOf,
+ forEach, join
 */
 
 /**

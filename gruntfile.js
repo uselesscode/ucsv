@@ -7,14 +7,17 @@ module.exports = function (grunt) {
     baseName = pkg.name + '-' + pkg.version,
     concatenatedPath = 'dist/' + baseName  + '.js',
     minifiedPath = 'dist/' + baseName + '.min.js',
+    outputSrcDir = 'dist/<%= pkg.name %>_<%= pkg.version %>_src/',
     docDir = 'docs/',
     jshintGlobals = {
       //console: true,
       'window': true,
       ok: true,
       test: true,
-      strictEqual: true
+      strictEqual: true,
+      deepEqual: true
     },
+    // quick-dirty copy obj
     jshintGlobalsBeforeConcat = JSON.parse(JSON.stringify(jshintGlobals));
 
   // test.js needs to know about CSV
@@ -32,16 +35,20 @@ module.exports = function (grunt) {
         src: [
           concatenatedPath,
           concatenatedPath + '.map'
-        ]
-      }
+        ],
+      },
+      removeMaps: [
+        outputSrcDir,
+        minifiedPath + '.map'
+      ]
     },
     concat_sourcemap: {
       options: {
       },
       main: {
-        src: ['dist/<%= pkg.name %>_src/intro.js',
-              'dist/<%= pkg.name %>_src/core.js',
-              'dist/<%= pkg.name %>_src/outro.js'
+        src: [outputSrcDir + 'intro.js',
+              outputSrcDir + 'core.js',
+              outputSrcDir + 'outro.js'
              ],
         dest: concatenatedPath
       }
@@ -63,7 +70,7 @@ module.exports = function (grunt) {
       // concat_sourcemap doesn't seem to supports banners, so banner is in intro.js,
       // search/replace vars
       banner: {
-        src: 'dist/<%= pkg.name %>_src/intro.js',
+        src: outputSrcDir + 'intro.js',
         actions: [
           {
             search: '%pkg.name%',
@@ -117,6 +124,16 @@ module.exports = function (grunt) {
           }
         ]
       },
+      removeMaps: {
+        src: [minifiedPath],
+        actions: [
+          {
+            search: '//.*sourceMappingURL=.*$',
+            replace: '',
+            flags: 'g'
+          }
+        ]
+      },
       test: {
         src: ['dist/test/tests.html'],
         actions: [
@@ -136,13 +153,13 @@ module.exports = function (grunt) {
         expand: true,
         cwd: sourceDir,
         src: ['*.js'],
-        dest: 'dist/<%= pkg.name %>_src/',
+        dest: outputSrcDir,
         filter: 'isFile'
       },
       test: {
         expand: true,
         cwd: 'test/',
-        src: ['main.js', 'lib/*', 'tests.html'],
+        src: ['arrayToCsv.js', 'csvToArray.js', 'csvToObject.js', 'objectToCsv.js', 'lib/*', 'tests.html'],
         dest: 'dist/test/',
         filter: 'isFile'
       }
@@ -222,8 +239,15 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-yuidoc');
   grunt.loadNpmTasks('grunt-regex-replace');
 
-  grunt.registerTask('default', ['jshint:beforeconcat', 'clean:cleanBuild', 'qunit:preBuild', 'copy', 'regex-replace:banner', 'concat_sourcemap', 'uglify', 'regex-replace:postMin', 'compress', 'copy:test', 'regex-replace:test', 'jshint:afterconcat', 'clean:postBuild', 'qunit:postBuild']);
-  grunt.registerTask('keepunmin', ['jshint:beforeconcat', 'clean:cleanBuild', 'qunit:preBuild', 'copy', 'regex-replace:banner', 'concat_sourcemap', 'uglify', 'regex-replace:postMin', 'compress', 'copy:test', 'regex-replace:test', 'jshint:afterconcat', 'qunit:postBuild']);
+  // these tasks are common to the middle of all build types
+  var buildCommon = ['copy', 'regex-replace:banner', 'concat_sourcemap', 'uglify', 'regex-replace:postMin', 'copy:test', 'regex-replace:test'];
+
+  grunt.registerTask('keepconcat', ['jshint:beforeconcat', 'clean:cleanBuild', 'qunit:preBuild'].concat(buildCommon, ['jshint:afterconcat', 'yuidoc', 'qunit:postBuild']));
+  grunt.registerTask('default', ['keepconcat', 'clean:postBuild', 'regex-replace:removeMaps', 'clean:removeMaps']);
+  grunt.registerTask('notest', ['clean:cleanBuild'].concat(buildCommon, ['clean:postBuild']));
+  grunt.registerTask('gz', ['keepconcat', 'clean:postBuild', 'compress']);
+
+  grunt.registerTask('cleanup', ['clean:cleanBuild']);
   grunt.registerTask('test', ['qunit:preBuild']);
-  grunt.registerTask('notest', ['clean:cleanBuild', 'copy', 'regex-replace:banner', 'concat_sourcemap', 'uglify', 'regex-replace:postMin', 'compress', 'copy:test', 'regex-replace:test', 'clean:postBuild']);
+  grunt.registerTask('docs', ['yuidoc']);
 };
